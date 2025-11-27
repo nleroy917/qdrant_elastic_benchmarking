@@ -1,0 +1,53 @@
+# Elastic-Qdrant Benchmarking Suite Configuration
+
+# Data configuration
+data:
+  parquet_file: "data/ecommerce_products_with_embeddings.parquet"
+
+# Output configuration
+output:
+  results_dir: "benchmark_results"
+
+# Backend configurations
+backends:
+  elasticsearch:
+    enabled: true
+    # Local Docker: http://localhost:9200
+    # Elastic Cloud: https://your-deployment.es.us-west2.aws.elastic-cloud.com:9243
+    # Self-hosted: https://your-elasticsearch-server.com:9200
+    host: "http://localhost:9200"
+
+    # API key for authentication
+    # Can be set here or via ES_LOCAL_API_KEY environment variable
+    api_key: null
+
+    # Uncomment for cloud deployments:
+    # username: "elastic"
+    # password: "your-password"
+
+  qdrant:
+    enabled: true
+
+    # Local Docker or self-hosted
+    host: "localhost"
+    port: 6333
+
+    # For remote/managed Qdrant Cloud:
+    # url: "https://your-instance.qdrant.io"
+    # api_key: "your-api-key"
+
+    # For Qdrant on a remote server:
+    # host: "your-qdrant-server.com"
+    # port: 6333
+
+# Workload configurations
+workloads:
+  write:
+    # Batch sizes to test during indexing
+    batch_sizes: [100, 500, 1000]
+
+  query:
+    # Number of queries to sample and execute
+    num_queries: 100
+    # Number of results to return per query
+    result_limit: 10
