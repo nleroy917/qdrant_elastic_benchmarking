@@ -1,6 +1,3 @@
-"""Write workload benchmarks for comparing search backends"""
-
-import time
 from typing import Dict, List
 from benchmarking.backends.backends import SearchBackend
 from benchmarking.metrics import Timer, CPUMonitor, BenchmarkResult
@@ -10,23 +7,27 @@ PARQUET_FILE = "ecommerce_products_with_embeddings.parquet"
 INDEX_SCHEMA_ES = {
     "mappings": {
         "properties": {
-            "review_text": {"type": "text"},
-            "age": {"type": "integer"},
-            "rating": {"type": "integer"},
-            "positive_feedback_count": {"type": "integer"},
-            "division_name": {"type": "keyword"},
-            "department_name": {"type": "keyword"},
-            "class_name": {"type": "keyword"},
-            "recommended_ind": {"type": "integer"},
-            "text": {"type": "text"},
+            "main_category": {"type": "keyword"},
+            "title": {"type": "text"},
+            "average_rating": {"type": "float"},
+            "rating_number": {"type": "integer"},
+            "features": {"type": "text"},
+            "description": {"type": "text"},
+            "price": {"type": "float"},
+            "store": {"type": "keyword"},
+            "categories": {"type": "keyword"},
+            "brand": {"type": "keyword"},
+            "manufacturer": {"type": "keyword"},
+            "brand_name": {"type": "keyword"},
             "embedding": {
                 "type": "dense_vector",
                 "dims": 384,
                 "index": True,
+                "index_options": {
+                    "type": "hnsw"
+                },
                 "similarity": "cosine"
-            },
-            "umap1": {"type": "float"},
-            "umap2": {"type": "float"}
+            }
         }
     }
 }
@@ -37,46 +38,52 @@ INDEX_SCHEMA_QDRANT = {
 
 
 def generate_elasticsearch_docs(backend: SearchBackend):
-    """Generate documents in Elasticsearch format"""
+    """
+    Generate documents in Elasticsearch format
+    """
     for idx, row in enumerate(backend.df.iter_rows(named=True)):
         doc = {
             "_id": idx,
             "_source": {
-                "review_text": row["review_text"],
-                "age": row["age"],
-                "rating": row["rating"],
-                "positive_feedback_count": row["positive_feedback_count"],
-                "division_name": row["division_name"],
-                "department_name": row["department_name"],
-                "class_name": row["class_name"],
-                "recommended_ind": row["recommended_ind"],
-                "text": row["text"],
-                "embedding": row["embedding"],
-                "umap1": row["umap1"],
-                "umap2": row["umap2"]
+                "main_category": row["main_category"],
+                "title": row["title"],
+                "average_rating": row["average_rating"],
+                "rating_number": row["rating_number"],
+                "features": row["features"],
+                "description": row["description"],
+                "price": row["price"],
+                "store": row["store"],
+                "categories": row["categories"],
+                "brand": row["brand"],
+                "manufacturer": row["manufacturer"],
+                "brand_name": row["brand_name"],
+                "embedding": row["embedding"]
             }
         }
         yield doc
 
 
 def generate_qdrant_docs(backend: SearchBackend):
-    """Generate documents in Qdrant format"""
+    """
+    Generate documents in Qdrant format
+    """
     for idx, row in enumerate(backend.df.iter_rows(named=True)):
         doc = {
             "_id": idx,
             "vector": row["embedding"],
             "payload": {
-                "review_text": row["review_text"],
-                "age": row["age"],
-                "rating": row["rating"],
-                "positive_feedback_count": row["positive_feedback_count"],
-                "division_name": row["division_name"],
-                "department_name": row["department_name"],
-                "class_name": row["class_name"],
-                "recommended_ind": row["recommended_ind"],
-                "text": row["text"],
-                "umap1": row["umap1"],
-                "umap2": row["umap2"]
+                "main_category": row["main_category"],
+                "title": row["title"],
+                "average_rating": row["average_rating"],
+                "rating_number": row["rating_number"],
+                "features": row["features"],
+                "description": row["description"],
+                "price": row["price"],
+                "store": row["store"],
+                "categories": row["categories"],
+                "brand": row["brand"],
+                "manufacturer": row["manufacturer"],
+                "brand_name": row["brand_name"]
             }
         }
         yield doc
@@ -108,11 +115,11 @@ def benchmark_write(
     results = {}
 
     for batch_size in batch_sizes:
-        # Reset index before each run
+        # reset index before each run
         backend.reset_index(index_name)
         backend.create_index(index_name, schema)
 
-        # Generate documents based on backend type
+        # generate documents based on backend type
         if "Elasticsearch" in backend.__class__.__name__:
             docs = generate_elasticsearch_docs(backend)
         else:

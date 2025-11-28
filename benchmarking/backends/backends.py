@@ -83,7 +83,7 @@ class ElasticsearchBackend(SearchBackend):
                 "query": {
                     "multi_match": {
                         "query": query,
-                        "fields": ["review_text", "text"],
+                        "fields": ["title", "text"],
                     }
                 },
                 "size": limit,
@@ -118,7 +118,7 @@ class ElasticsearchBackend(SearchBackend):
                             {
                                 "multi_match": {
                                     "query": query,
-                                    "fields": ["review_text", "text"],
+                                    "fields": ["title", "text"],
                                     "boost": 1.0,
                                 }
                             },
@@ -258,8 +258,8 @@ class QdrantBackend(SearchBackend):
 
             for point in points:
                 text = point.payload.get("text", "") or ""
-                review_text = point.payload.get("review_text", "") or ""
-                if query.lower() in text.lower() or query.lower() in review_text.lower():
+                title = point.payload.get("title", "") or ""
+                if query.lower() in text.lower() or query.lower() in title.lower():
                     results.append(point.payload)
                     if len(results) >= limit:
                         break

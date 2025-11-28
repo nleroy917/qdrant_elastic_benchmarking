@@ -28,7 +28,7 @@ def sample_queries(backend: SearchBackend, num_queries: int = 100) -> Tuple[List
     for idx in sample_indices:
         row = backend.df[idx]
         # sample from text field for lexical queries
-        text = row["text"]
+        text = row["title"]
         if isinstance(text, list):
             text = text[0] if text else None
         else:
@@ -46,12 +46,12 @@ def sample_queries(backend: SearchBackend, num_queries: int = 100) -> Tuple[List
         if isinstance(embedding, list):
             embedding = embedding[0] if embedding else None
         else:
-            # Convert Polars Series to list
+            # convert polars series to list
             if hasattr(embedding, 'to_list'):
-                # Polars Series
+                # polars series
                 embedding = embedding.to_list()
             elif hasattr(embedding, 'tolist'):
-                # NumPy array
+                # numpy array
                 embedding = embedding.tolist()
             else:
                 embedding = list(embedding) if embedding is not None else None
