@@ -1,5 +1,5 @@
 from typing import Dict, List
-from benchmarking.backends.backends import SearchBackend
+from benchmarking.backends import SearchBackend
 from benchmarking.metrics import Timer, CPUMonitor, BenchmarkResult
 
 
