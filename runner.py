@@ -6,7 +6,8 @@ from pathlib import Path
 from typing import Dict
 
 from benchmarking.backends.backends import ElasticsearchBackend, QdrantBackend
-from benchmarking.benchmarks.write import benchmark_write, INDEX_SCHEMA_ES, INDEX_SCHEMA_QDRANT
+from benchmarking.benchmarks.write import benchmark_write
+from benchmarking.backends.index_schemas import INDEX_SCHEMA_ES, INDEX_SCHEMA_QDRANT
 from benchmarking.benchmarks.query import run_query_benchmarks
 from config import BenchmarkConfig, load_config, create_default_config
 
@@ -170,8 +171,8 @@ class BenchmarkRunner:
         lines.append("|------------|--------|----------------------|--------------|-------------|---------------|")
 
         for batch_size in [100, 500, 1000]:
-            es_key = f"elasticsearch_write:{batch_size}"
-            qdrant_key = f"qdrant_write:{batch_size}"
+            _es_key = f"elasticsearch_write:{batch_size}"
+            _qdrant_key = f"qdrant_write:{batch_size}"
 
             # try to get results from nested dict
             es_result_dict = self.all_results.get("elasticsearch_write", {}).get(batch_size)
