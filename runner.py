@@ -114,7 +114,7 @@ class BenchmarkRunner:
             es_query_results = run_query_benchmarks(
                 es_backend,
                 "elasticsearch",
-                "womens_clothing_reviews",
+                "bench_write",
                 num_queries=num_queries
             )
             self.all_results["elasticsearch_query"] = {
@@ -129,7 +129,7 @@ class BenchmarkRunner:
             qdrant_query_results = run_query_benchmarks(
                 qdrant_backend,
                 "qdrant",
-                "womens_clothing_reviews",
+                "bench_write",
                 num_queries=num_queries
             )
             self.all_results["qdrant_query"] = {
