@@ -60,54 +60,6 @@ def sample_queries(backend: SearchBackend, num_queries: int = 100) -> Tuple[List
     return lexical_queries, vector_queries
 
 
-def benchmark_lexical_search(
-    backend: SearchBackend,
-    backend_name: str,
-    index_name: str,
-    queries: List[str],
-    result_limit: int = 10,
-) -> BenchmarkResult:
-    """
-    Benchmark lexical (full-text) search performance
-
-    Args:
-        backend: SearchBackend instance
-        backend_name: Name of the backend
-        index_name: Name of index/collection
-        queries: List of lexical queries to execute
-        result_limit: Number of results per query
-
-    Returns:
-        BenchmarkResult with latency and throughput metrics
-    """
-    cpu_monitor = CPUMonitor()
-    cpu_monitor.start()
-
-    timer = Timer()
-
-    for query in queries:
-        with timer:
-            backend.lexical_search(index_name, query, limit=result_limit)
-
-    cpu_stats = cpu_monitor.stop()
-
-    result = BenchmarkResult(
-        name=f"{backend_name}_lexical_search",
-        engine=backend_name,
-        workload_type="lexical_query",
-        duration_seconds=timer.elapsed_seconds,
-        total_operations=len(queries),
-        latency_metrics=timer.get_latency_metrics(),
-        throughput_ops_per_sec=len(queries) / timer.elapsed_seconds if timer.elapsed_seconds > 0 else 0,
-        avg_cpu_usage_percent=cpu_stats["avg_cpu_percent"],
-        peak_cpu_usage_percent=cpu_stats["peak_cpu_percent"],
-        avg_memory_mb=cpu_stats["avg_memory_mb"],
-        peak_memory_mb=cpu_stats["peak_memory_mb"],
-    )
-
-    return result
-
-
 def benchmark_vector_search(
     backend: SearchBackend,
     backend_name: str,
@@ -155,64 +107,6 @@ def benchmark_vector_search(
 
     return result
 
-
-def benchmark_hybrid_search(
-    backend: SearchBackend,
-    backend_name: str,
-    index_name: str,
-    lexical_queries: List[str],
-    vector_queries: List[List[float]],
-    result_limit: int = 10,
-) -> BenchmarkResult:
-    """
-    Benchmark hybrid (lexical + vector) search performance
-
-    Args:
-        backend: SearchBackend instance
-        backend_name: Name of the backend
-        index_name: Name of index/collection
-        lexical_queries: List of lexical queries
-        vector_queries: List of query vectors
-        result_limit: Number of results per query
-
-    Returns:
-        BenchmarkResult with latency and throughput metrics
-    """
-    cpu_monitor = CPUMonitor()
-    cpu_monitor.start()
-
-    timer = Timer()
-
-    # Pair up queries and vectors
-    num_queries = min(len(lexical_queries), len(vector_queries))
-    for i in range(num_queries):
-        with timer:
-            backend.hybrid_search(
-                index_name,
-                lexical_queries[i],
-                vector_queries[i],
-                limit=result_limit
-            )
-
-    cpu_stats = cpu_monitor.stop()
-
-    result = BenchmarkResult(
-        name=f"{backend_name}_hybrid_search",
-        engine=backend_name,
-        workload_type="hybrid_query",
-        duration_seconds=timer.elapsed_seconds,
-        total_operations=num_queries,
-        latency_metrics=timer.get_latency_metrics(),
-        throughput_ops_per_sec=num_queries / timer.elapsed_seconds if timer.elapsed_seconds > 0 else 0,
-        avg_cpu_usage_percent=cpu_stats["avg_cpu_percent"],
-        peak_cpu_usage_percent=cpu_stats["peak_cpu_percent"],
-        avg_memory_mb=cpu_stats["avg_memory_mb"],
-        peak_memory_mb=cpu_stats["peak_memory_mb"],
-    )
-
-    return result
-
-
 def run_query_benchmarks(
     backend: SearchBackend,
     backend_name: str,
@@ -236,18 +130,6 @@ def run_query_benchmarks(
 
     results = {}
 
-    print(f"\n{backend_name.upper()} - LEXICAL SEARCH")
-    print("-" * 50)
-    lexical_result = benchmark_lexical_search(
-        backend, backend_name, index_name, lexical_queries
-    )
-    results["lexical"] = lexical_result
-    print(f"  Queries: {lexical_result.total_operations}")
-    print(f"  Duration: {lexical_result.duration_seconds:.2f}s")
-    print(f"  Throughput: {lexical_result.throughput_ops_per_sec:.2f} queries/sec")
-    print(f"  Mean Latency: {lexical_result.latency_metrics.get('mean_ms', 0):.2f}ms")
-    print(f"  P99 Latency: {lexical_result.latency_metrics.get('p99_ms', 0):.2f}ms")
-
     print(f"\n{backend_name.upper()} - VECTOR SEARCH")
     print("-" * 50)
     vector_result = benchmark_vector_search(
@@ -259,17 +141,5 @@ def run_query_benchmarks(
     print(f"  Throughput: {vector_result.throughput_ops_per_sec:.2f} queries/sec")
     print(f"  Mean Latency: {vector_result.latency_metrics.get('mean_ms', 0):.2f}ms")
     print(f"  P99 Latency: {vector_result.latency_metrics.get('p99_ms', 0):.2f}ms")
-
-    print(f"\n{backend_name.upper()} - HYBRID SEARCH")
-    print("-" * 50)
-    hybrid_result = benchmark_hybrid_search(
-        backend, backend_name, index_name, lexical_queries, vector_queries
-    )
-    results["hybrid"] = hybrid_result
-    print(f"  Queries: {hybrid_result.total_operations}")
-    print(f"  Duration: {hybrid_result.duration_seconds:.2f}s")
-    print(f"  Throughput: {hybrid_result.throughput_ops_per_sec:.2f} queries/sec")
-    print(f"  Mean Latency: {hybrid_result.latency_metrics.get('mean_ms', 0):.2f}ms")
-    print(f"  P99 Latency: {hybrid_result.latency_metrics.get('p99_ms', 0):.2f}ms")
-
+    
     return results

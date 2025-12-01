@@ -70,20 +70,6 @@ class SearchBackend(ABC):
         """
         pass
 
-    @abstractmethod
-    def lexical_search(self, index_name: str, query: str, limit: int = 10) -> List[Dict]:
-        """
-        Perform lexical/full-text search
-
-        Args:
-            index_name: Name of index/collection
-            query: Search query string
-            limit: Maximum number of results
-
-        Returns:
-            List of matching documents
-        """
-        pass
 
     @abstractmethod
     def vector_search(self, index_name: str, vector: List[float], limit: int = 10) -> List[Dict]:
@@ -92,22 +78,6 @@ class SearchBackend(ABC):
 
         Args:
             index_name: Name of index/collection
-            vector: Query vector
-            limit: Maximum number of results
-
-        Returns:
-            List of matching documents
-        """
-        pass
-
-    @abstractmethod
-    def hybrid_search(self, index_name: str, query: str, vector: List[float], limit: int = 10) -> List[Dict]:
-        """
-        Perform hybrid search combining lexical and vector search
-
-        Args:
-            index_name: Name of index/collection
-            query: Search query string
             vector: Query vector
             limit: Maximum number of results
 

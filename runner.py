@@ -5,9 +5,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict
 
-from benchmarking.backends.backends import ElasticsearchBackend, QdrantBackend
+from benchmarking.backends import ElasticsearchBackend, QdrantBackend, INDEX_SCHEMA_ES, INDEX_SCHEMA_QDRANT
 from benchmarking.benchmarks.write import benchmark_write
-from benchmarking.backends.index_schemas import INDEX_SCHEMA_ES, INDEX_SCHEMA_QDRANT
 from benchmarking.benchmarks.query import run_query_benchmarks
 from config import BenchmarkConfig, load_config, create_default_config
 
