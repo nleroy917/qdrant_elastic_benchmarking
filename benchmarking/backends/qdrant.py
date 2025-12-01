@@ -66,7 +66,9 @@ class QdrantBackend(SearchBackend):
         vector_size = schema.get("vector_size", 384)
         self.client.create_collection(
             collection_name=index_name,
-            vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
+            vectors_config={
+                "embedding": VectorParams(size=vector_size, distance=Distance.COSINE)
+            },
             # we use sparse vectors for textual fields
             # to perform lexical/keyword search alongside vector search
             sparse_vectors_config={
@@ -88,7 +90,7 @@ class QdrantBackend(SearchBackend):
                 payload=doc["payload"],
             )
             points.append(point)
-
+            
             if len(points) >= batch_size:
                 self.client.upsert(
                     collection_name=index_name,
@@ -123,17 +125,19 @@ class QdrantBackend(SearchBackend):
                 model="Qdrant/bm25"
             ),
             using="bm25",
+            limit=limit,
         )
-        return [result.payload for result in response]
+        return [result.payload for result in response.points]
 
     def vector_search(self, index_name: str, vector: List[float], limit: int = 10) -> List[Dict]:
         try:
-            results = self.client.search(
+            results = self.client.query_points(
                 collection_name=index_name,
-                query_vector=vector,
+                query=vector,
+                using="embedding",
                 limit=limit,
             )
-            return [result.payload for result in results]
+            return [result.payload for result in results.points]
         except Exception as e:
             print(f"Vector search failed: {e}")
             return []
@@ -161,7 +165,7 @@ class QdrantBackend(SearchBackend):
                 query=FusionQuery(fusion=Fusion.RRF),
                 limit=limit,
             )
-            return [result.payload for result in response]
+            return [result.payload for result in response.points]
         except Exception as e:
             print(f"Hybrid search failed: {e}")
             return []
