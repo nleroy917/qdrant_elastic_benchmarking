@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Generator, Optional, Union
+from typing import List, Dict, Any, Generator
 import os
 
 from benchmarking.backends.base import SearchBackend
@@ -12,11 +12,10 @@ class ElasticsearchBackend(SearchBackend):
     def __init__(self, parquet_file: str, host: str = None, api_key: str = None, config=None):
         super().__init__(parquet_file)
 
-        # Support both direct parameters and BackendConfig objects
+        # support both direct parameters and BackendConfig objects
         if config is not None:
             self.host = config.get("host", "http://localhost:9200")
             self.api_key = config.get("api_key")
-            # Check environment variable if api_key not set in config
             if not self.api_key:
                 self.api_key = os.getenv("ES_LOCAL_API_KEY")
         else:
@@ -35,7 +34,7 @@ class ElasticsearchBackend(SearchBackend):
 
     def health_check(self) -> bool:
         try:
-            info = self.client.info()
+            _info = self.client.info()
             return True
         except Exception as e:
             print(f"Elasticsearch health check failed: {e}")

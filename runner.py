@@ -1,8 +1,6 @@
-"""
-Main benchmark runner that orchestrates all benchmarks and generates reports
-"""
-
 import json
+import os
+
 from datetime import datetime
 from pathlib import Path
 from typing import Dict
@@ -265,10 +263,16 @@ class BenchmarkRunner:
         with open(report_path, "w") as f:
             f.writelines(lines)
 
+def verify_environment() -> None:
+    """
+    Verify that required environment settings are correct
+    """
+    if not os.getenv("ES_LOCAL_API_KEY"):
+        raise EnvironmentError("ES_LOCAL_API_KEY environment variable is required.")
 
 if __name__ == "__main__":
+    verify_environment()
     runner = BenchmarkRunner(config)
-
     try:
         runner.run_all_benchmarks()
         runner.generate_reports()

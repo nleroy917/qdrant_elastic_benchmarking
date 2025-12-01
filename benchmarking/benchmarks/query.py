@@ -1,11 +1,9 @@
-"""Query workload benchmarks for comparing search backends"""
-
 import random
+
 from typing import Dict, List, Tuple
+
 from benchmarking.backends.backends import SearchBackend
 from benchmarking.metrics import Timer, CPUMonitor, BenchmarkResult
-
-PARQUET_FILE = "data/ecommerce_products_with_embeddings.parquet"
 
 
 def sample_queries(backend: SearchBackend, num_queries: int = 100) -> Tuple[List[str], List[List[float]]]:
@@ -275,63 +273,3 @@ def run_query_benchmarks(
     print(f"  P99 Latency: {hybrid_result.latency_metrics.get('p99_ms', 0):.2f}ms")
 
     return results
-
-
-if __name__ == "__main__":
-    from benchmarking.backends.backends import ElasticsearchBackend, QdrantBackend
-
-    print("=" * 70)
-    print("ELASTICSEARCH QUERY BENCHMARKS")
-    print("=" * 70)
-
-    es_backend = ElasticsearchBackend(PARQUET_FILE)
-    es_backend.connect()
-
-    if not es_backend.health_check():
-        print("ERROR: Could not connect to Elasticsearch")
-        exit(1)
-
-    es_results = run_query_benchmarks(
-        es_backend,
-        "elasticsearch",
-        "womens_clothing_reviews",
-        num_queries=100
-    )
-
-    es_backend.disconnect()
-
-    print("\n" + "=" * 70)
-    print("QDRANT QUERY BENCHMARKS")
-    print("=" * 70)
-
-    qdrant_backend = QdrantBackend(PARQUET_FILE)
-    qdrant_backend.connect()
-
-    if not qdrant_backend.health_check():
-        print("ERROR: Could not connect to Qdrant")
-        exit(1)
-
-    qdrant_results = run_query_benchmarks(
-        qdrant_backend,
-        "qdrant",
-        "womens_clothing_reviews",
-        num_queries=100
-    )
-
-    qdrant_backend.disconnect()
-
-    print("\n" + "=" * 70)
-    print("QUERY WORKLOAD SUMMARY")
-    print("=" * 70)
-
-    for query_type in ["lexical", "vector", "hybrid"]:
-        es_result = es_results[query_type]
-        qdrant_result = qdrant_results[query_type]
-
-        print(f"\n{query_type.upper()} SEARCH:")
-        print(f"  Elasticsearch: {es_result.throughput_ops_per_sec:.2f} queries/sec")
-        print(f"  Qdrant: {qdrant_result.throughput_ops_per_sec:.2f} queries/sec")
-
-        if qdrant_result.throughput_ops_per_sec > 0:
-            speedup = es_result.throughput_ops_per_sec / qdrant_result.throughput_ops_per_sec
-            print(f"  Speedup: {speedup:.2f}x")
