@@ -133,7 +133,7 @@ class QdrantBackend(SearchBackend):
         try:
             results = self.client.query_points(
                 collection_name=index_name,
-                query=vector,
+                query=vector[0],
                 using="embedding",
                 limit=limit,
             )
