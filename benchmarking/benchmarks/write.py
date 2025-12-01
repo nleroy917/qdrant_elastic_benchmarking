@@ -1,7 +1,7 @@
 from typing import Dict, List
+
 from benchmarking.backends import SearchBackend
 from benchmarking.metrics import Timer, CPUMonitor, BenchmarkResult
-
 
 def generate_elasticsearch_docs(backend: SearchBackend):
     """
@@ -36,7 +36,13 @@ def generate_qdrant_docs(backend: SearchBackend):
     for idx, row in enumerate(backend.df.iter_rows(named=True)):
         doc = {
             "_id": idx,
-            "vector": row["embedding"],
+            "vector": {
+                "embedding": row["embedding"],
+                "bm25": {
+                    'values': row['bm25_values'],
+                    'indices': row['bm25_indices']
+                }
+            },
             "payload": {
                 "main_category": row["main_category"],
                 "title": row["title"],

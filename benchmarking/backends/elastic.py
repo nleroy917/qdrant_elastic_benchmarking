@@ -102,6 +102,21 @@ class ElasticsearchBackend(SearchBackend):
     def get_doc_count(self, index_name: str) -> int:
         stats = self.client.indices.stats(index=index_name)
         return stats["indices"][index_name]["primaries"]["docs"]["count"]
+    
+    def lexical_search(self, index_name: str, query: str, limit: int = 10) -> List[Dict]:
+        response = self.client.search(
+            index=index_name,
+            body={
+                "query": {
+                    "multi_match": {
+                        "query": query,
+                        "fields": ["title", "description", "features"]
+                    }
+                },
+                "size": limit,
+            },
+        )
+        return [hit["_source"] for hit in response["hits"]["hits"]]
 
     def vector_search(self, index_name: str, vector: List[float], limit: int = 10) -> List[Dict]:
         response = self.client.search(
@@ -109,9 +124,34 @@ class ElasticsearchBackend(SearchBackend):
             body={
                 "query": {
                     "knn": {
-                        "embedding": {
-                            "vector": list(vector),
-                            "k": limit,
+                        "field": "embedding",
+                        "query_vector": vector[0],
+                        "k": limit,
+                    }
+                },
+                "size": limit,
+            },
+        )
+        return [hit["_source"] for hit in response["hits"]["hits"]]
+
+    def hybrid_search(self, index_name, query, vector, limit = 10):
+        response = self.client.search(
+            index=index_name,
+            body={
+                "query": {
+                    "bool": {
+                        "must": {
+                            "multi_match": {
+                                "query": query,
+                                "fields": ["title", "description", "features"]
+                            }
+                        },
+                        "should": {
+                            "knn": {
+                                "field": "embedding",
+                                "query_vector": vector,
+                                "k": limit,
+                            }
                         }
                     }
                 },

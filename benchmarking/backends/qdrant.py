@@ -1,10 +1,14 @@
 from typing import List, Dict, Any, Generator
 
+from fastembed import SparseTextEmbedding
+
 from .base import SearchBackend
 
 INDEX_SCHEMA_QDRANT = {
     "vector_size": 384,
 }
+
+smodel = SparseTextEmbedding("Qdrant/bm25")
 
 class QdrantBackend(SearchBackend):
     """
@@ -13,8 +17,6 @@ class QdrantBackend(SearchBackend):
 
     def __init__(self, parquet_file: str, host: str = None, port: int = None, url: str = None, api_key: str = None, config=None):
         super().__init__(parquet_file)
-
-        # Support both direct parameters and BackendConfig objects
         if config is not None:
             self.host = config.get("host", "localhost")
             self.port = config.get("port", 6333)
@@ -59,12 +61,17 @@ class QdrantBackend(SearchBackend):
             print(f"No existing collection to delete: {index_name}")
 
     def create_index(self, index_name: str, schema: Dict[str, Any]) -> None:
-        from qdrant_client.models import Distance, VectorParams
+        from qdrant_client.models import Distance, VectorParams, SparseVectorParams, Modifier
 
         vector_size = schema.get("vector_size", 384)
         self.client.create_collection(
             collection_name=index_name,
             vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
+            # we use sparse vectors for textual fields
+            # to perform lexical/keyword search alongside vector search
+            sparse_vectors_config={
+                "bm25": SparseVectorParams(modifier=Modifier.IDF)
+            }
         )
         print(f"Created collection: {index_name}")
 
@@ -106,6 +113,18 @@ class QdrantBackend(SearchBackend):
     def get_doc_count(self, index_name: str) -> int:
         collection_info = self.client.get_collection(collection_name=index_name)
         return collection_info.points_count
+    
+    def lexical_search(self, index_name: str, query: str, limit = 10):
+        from qdrant_client.models import Document
+        response = self.client.query_points(
+            collection_name=index_name,
+            query=Document(
+                text=query,
+                model="Qdrant/bm25"
+            ),
+            using="bm25",
+        )
+        return [result.payload for result in response]
 
     def vector_search(self, index_name: str, vector: List[float], limit: int = 10) -> List[Dict]:
         try:
@@ -118,3 +137,32 @@ class QdrantBackend(SearchBackend):
         except Exception as e:
             print(f"Vector search failed: {e}")
             return []
+    
+    def hybrid_search(self, index_name: str, query: str, vector: List[float], limit: int = 10) -> List[Dict]:
+        from qdrant_client.models import Document, Prefetch, FusionQuery, Fusion
+        try:
+            response = self.client.query_points(
+                collection_name=index_name,
+                prefetch = [
+                    Prefetch(
+                        query=vector,
+                        using="embedding",
+                        limit=100,
+                    ),
+                    Prefetch(
+                        query=Document(
+                            text=query,
+                            model="Qdrant/bm25"
+                        ),
+                        using="bm25",
+                        limit=100,
+                    ),
+                ],
+                query=FusionQuery(fusion=Fusion.RRF),
+                limit=limit,
+            )
+            return [result.payload for result in response]
+        except Exception as e:
+            print(f"Hybrid search failed: {e}")
+            return []
+    
