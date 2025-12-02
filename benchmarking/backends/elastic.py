@@ -139,7 +139,7 @@ class ElasticsearchBackend(SearchBackend):
                         "should": {
                             "knn": {
                                 "field": "embedding",
-                                "query_vector": vector,
+                                "query_vector": vector[0],
                                 "k": limit,
                             }
                         }

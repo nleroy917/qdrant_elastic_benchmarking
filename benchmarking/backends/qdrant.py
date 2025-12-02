@@ -149,7 +149,7 @@ class QdrantBackend(SearchBackend):
                 collection_name=index_name,
                 prefetch = [
                     Prefetch(
-                        query=vector,
+                        query=vector[0],
                         using="embedding",
                         limit=100,
                     ),

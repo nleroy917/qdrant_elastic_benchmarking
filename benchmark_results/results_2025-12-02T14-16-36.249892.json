@@ -1,0 +1,250 @@
+{
+  "elasticsearch_write": {
+    "100": {
+      "name": "elasticsearch_write_batch_100",
+      "engine": "elasticsearch",
+      "workload_type": "write",
+      "duration_seconds": 202.7871389389038,
+      "total_operations": 257548,
+      "latency_metrics": {
+        "mean_ms": 202787.1389389038,
+        "median_ms": 202787.1389389038,
+        "p95_ms": 202787.1389389038,
+        "p99_ms": 202787.1389389038,
+        "min_ms": 202787.1389389038,
+        "max_ms": 202787.1389389038
+      },
+      "throughput_ops_per_sec": 1270.041095049892,
+      "avg_cpu_usage_percent": 0,
+      "peak_cpu_usage_percent": 0,
+      "avg_memory_mb": 0,
+      "peak_memory_mb": 0
+    },
+    "500": {
+      "name": "elasticsearch_write_batch_500",
+      "engine": "elasticsearch",
+      "workload_type": "write",
+      "duration_seconds": 172.42454504966736,
+      "total_operations": 257548,
+      "latency_metrics": {
+        "mean_ms": 172424.54504966736,
+        "median_ms": 172424.54504966736,
+        "p95_ms": 172424.54504966736,
+        "p99_ms": 172424.54504966736,
+        "min_ms": 172424.54504966736,
+        "max_ms": 172424.54504966736
+      },
+      "throughput_ops_per_sec": 1493.6852518637215,
+      "avg_cpu_usage_percent": 0,
+      "peak_cpu_usage_percent": 0,
+      "avg_memory_mb": 0,
+      "peak_memory_mb": 0
+    },
+    "1000": {
+      "name": "elasticsearch_write_batch_1000",
+      "engine": "elasticsearch",
+      "workload_type": "write",
+      "duration_seconds": 190.09045600891113,
+      "total_operations": 257548,
+      "latency_metrics": {
+        "mean_ms": 190090.45600891113,
+        "median_ms": 190090.45600891113,
+        "p95_ms": 190090.45600891113,
+        "p99_ms": 190090.45600891113,
+        "min_ms": 190090.45600891113,
+        "max_ms": 190090.45600891113
+      },
+      "throughput_ops_per_sec": 1354.8707568355067,
+      "avg_cpu_usage_percent": 0,
+      "peak_cpu_usage_percent": 0,
+      "avg_memory_mb": 0,
+      "peak_memory_mb": 0
+    }
+  },
+  "qdrant_write": {
+    "100": {
+      "name": "qdrant_write_batch_100",
+      "engine": "qdrant",
+      "workload_type": "write",
+      "duration_seconds": 192.53608989715576,
+      "total_operations": 257548,
+      "latency_metrics": {
+        "mean_ms": 192536.08989715576,
+        "median_ms": 192536.08989715576,
+        "p95_ms": 192536.08989715576,
+        "p99_ms": 192536.08989715576,
+        "min_ms": 192536.08989715576,
+        "max_ms": 192536.08989715576
+      },
+      "throughput_ops_per_sec": 1337.6609036652335,
+      "avg_cpu_usage_percent": 0,
+      "peak_cpu_usage_percent": 0,
+      "avg_memory_mb": 0,
+      "peak_memory_mb": 0
+    },
+    "500": {
+      "name": "qdrant_write_batch_500",
+      "engine": "qdrant",
+      "workload_type": "write",
+      "duration_seconds": 122.0366199016571,
+      "total_operations": 257548,
+      "latency_metrics": {
+        "mean_ms": 122036.6199016571,
+        "median_ms": 122036.6199016571,
+        "p95_ms": 122036.6199016571,
+        "p99_ms": 122036.6199016571,
+        "min_ms": 122036.6199016571,
+        "max_ms": 122036.6199016571
+      },
+      "throughput_ops_per_sec": 2110.41571134586,
+      "avg_cpu_usage_percent": 0,
+      "peak_cpu_usage_percent": 0,
+      "avg_memory_mb": 0,
+      "peak_memory_mb": 0
+    },
+    "1000": {
+      "name": "qdrant_write_batch_1000",
+      "engine": "qdrant",
+      "workload_type": "write",
+      "duration_seconds": 122.11878681182861,
+      "total_operations": 257548,
+      "latency_metrics": {
+        "mean_ms": 122118.78681182861,
+        "median_ms": 122118.78681182861,
+        "p95_ms": 122118.78681182861,
+        "p99_ms": 122118.78681182861,
+        "min_ms": 122118.78681182861,
+        "max_ms": 122118.78681182861
+      },
+      "throughput_ops_per_sec": 2108.9957305001126,
+      "avg_cpu_usage_percent": 0,
+      "peak_cpu_usage_percent": 0,
+      "avg_memory_mb": 0,
+      "peak_memory_mb": 0
+    }
+  },
+  "elasticsearch_query": {
+    "lexical": {
+      "name": "elasticsearch_lexical_search",
+      "engine": "elasticsearch",
+      "workload_type": "lexical_query",
+      "duration_seconds": 0.009480953216552734,
+      "total_operations": 100,
+      "latency_metrics": {
+        "mean_ms": 21.42918586730957,
+        "median_ms": 18.33820343017578,
+        "p95_ms": 35.18199920654297,
+        "p99_ms": 147.06897735595703,
+        "min_ms": 7.391929626464844,
+        "max_ms": 147.06897735595703
+      },
+      "throughput_ops_per_sec": 10547.462656540763,
+      "avg_cpu_usage_percent": 0,
+      "peak_cpu_usage_percent": 0,
+      "avg_memory_mb": 0,
+      "peak_memory_mb": 0
+    },
+    "vector": {
+      "name": "elasticsearch_vector_search",
+      "engine": "elasticsearch",
+      "workload_type": "vector_query",
+      "duration_seconds": 0.009905099868774414,
+      "total_operations": 100,
+      "latency_metrics": {
+        "mean_ms": 32.974700927734375,
+        "median_ms": 11.878132820129395,
+        "p95_ms": 135.39600372314453,
+        "p99_ms": 591.7990207672119,
+        "min_ms": 4.697084426879883,
+        "max_ms": 591.7990207672119
+      },
+      "throughput_ops_per_sec": 10095.809363340955,
+      "avg_cpu_usage_percent": 0,
+      "peak_cpu_usage_percent": 0,
+      "avg_memory_mb": 0,
+      "peak_memory_mb": 0
+    },
+    "hybrid": {
+      "name": "elasticsearch_hybrid_search",
+      "engine": "elasticsearch",
+      "workload_type": "hybrid_query",
+      "duration_seconds": 0.01676797866821289,
+      "total_operations": 100,
+      "latency_metrics": {
+        "mean_ms": 14.536314010620117,
+        "median_ms": 12.137413024902344,
+        "p95_ms": 26.221036911010742,
+        "p99_ms": 63.345909118652344,
+        "min_ms": 6.117820739746094,
+        "max_ms": 63.345909118652344
+      },
+      "throughput_ops_per_sec": 5963.74804493104,
+      "avg_cpu_usage_percent": 0,
+      "peak_cpu_usage_percent": 0,
+      "avg_memory_mb": 0,
+      "peak_memory_mb": 0
+    }
+  },
+  "qdrant_query": {
+    "lexical": {
+      "name": "qdrant_lexical_search",
+      "engine": "qdrant",
+      "workload_type": "lexical_query",
+      "duration_seconds": 0.004459857940673828,
+      "total_operations": 100,
+      "latency_metrics": {
+        "mean_ms": 22.138164043426514,
+        "median_ms": 11.772990226745605,
+        "p95_ms": 55.52315711975098,
+        "p99_ms": 689.0449523925781,
+        "min_ms": 4.459857940673828,
+        "max_ms": 689.0449523925781
+      },
+      "throughput_ops_per_sec": 22422.238853843686,
+      "avg_cpu_usage_percent": 0,
+      "peak_cpu_usage_percent": 0,
+      "avg_memory_mb": 0,
+      "peak_memory_mb": 0
+    },
+    "vector": {
+      "name": "qdrant_vector_search",
+      "engine": "qdrant",
+      "workload_type": "vector_query",
+      "duration_seconds": 0.0045928955078125,
+      "total_operations": 100,
+      "latency_metrics": {
+        "mean_ms": 14.963817596435547,
+        "median_ms": 7.9070329666137695,
+        "p95_ms": 33.447980880737305,
+        "p99_ms": 242.4020767211914,
+        "min_ms": 3.583192825317383,
+        "max_ms": 242.4020767211914
+      },
+      "throughput_ops_per_sec": 21772.757475083057,
+      "avg_cpu_usage_percent": 0,
+      "peak_cpu_usage_percent": 0,
+      "avg_memory_mb": 0,
+      "peak_memory_mb": 0
+    },
+    "hybrid": {
+      "name": "qdrant_hybrid_search",
+      "engine": "qdrant",
+      "workload_type": "hybrid_query",
+      "duration_seconds": 0.013489246368408203,
+      "total_operations": 100,
+      "latency_metrics": {
+        "mean_ms": 17.38168478012085,
+        "median_ms": 16.826510429382324,
+        "p95_ms": 24.801015853881836,
+        "p99_ms": 42.7088737487793,
+        "min_ms": 6.88624382019043,
+        "max_ms": 42.7088737487793
+      },
+      "throughput_ops_per_sec": 7413.312595001591,
+      "avg_cpu_usage_percent": 0,
+      "peak_cpu_usage_percent": 0,
+      "avg_memory_mb": 0,
+      "peak_memory_mb": 0
+    }
+  }
+}
